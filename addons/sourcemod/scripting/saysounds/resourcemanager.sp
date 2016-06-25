@@ -8,7 +8,7 @@
 	#define DONT_DOWNLOAD	0
 	#define DOWNLOAD		1
 	#define ALWAYS_DOWNLOAD 2
-
+	
 	enum State { Unknown=0, Defined, Download, Force, Precached };
 
 	new Handle:cvarDownloadThreshold	= INVALID_HANDLE;
@@ -157,7 +157,7 @@
 					 const String:sample[],
 					 entity = SOUND_FROM_PLAYER,
 					 channel = SNDCHAN_AUTO,
-					 level = SNDLEVEL_SCREAMING,
+					 level = SNDLEVEL_ROCKET,
 					 flags = SND_NOFLAGS,
 					 Float:volume = SNDVOL_NORMAL,
 					 pitch = SNDPITCH_NORMAL,
@@ -182,7 +182,7 @@
 					 const String:sample[],
 					 entity = SOUND_FROM_PLAYER,
 					 channel = SNDCHAN_AUTO,
-					 level = SNDLEVEL_SCREAMING,
+					 level = SNDLEVEL_ROCKET,
 					 flags = SND_NOFLAGS,
 					 Float:volume = SNDVOL_NORMAL,
 					 pitch = SNDPITCH_NORMAL,

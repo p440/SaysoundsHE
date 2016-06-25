@@ -1618,7 +1618,7 @@ Send_Sound(client, const String:filelocation[], const String:name[], bool:joinso
 
 	new Float:defVol = GetConVarFloat(cvarvolume);
 	new Float:volume = KvGetFloat(listfile, "volume", defVol);
-	if (volume == 0.0 || volume == 1.0)
+	if (volume == 0.0 || volume >= defVol)
 		volume = defVol; // do this check because of possibly "stupid" values in cfg file
 
 	// ### Delay ###

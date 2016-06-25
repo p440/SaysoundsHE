@@ -334,5 +334,7 @@ Versions:
 		* Another fix for built in game sounds
 	4.0.9 June 25, 2016
 		* Fixed issue for cs go and interrupt cvar
+	4.0.10 June 25, 2016
+		* Increased maximum sound level (you may need to adjust your soundclips less often now)
 Todo:
 	* Optimise keyvalues usage

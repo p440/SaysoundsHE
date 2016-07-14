@@ -203,7 +203,7 @@ new bool:g_bPlayedEvent2Client[MAXPLAYERS+1] = false;
 public Plugin:myinfo = 
 {
 	name = "Say Sounds (including Hybrid Edition)",
-	author = "Hell Phoenix|Naris|FernFerret|Uberman|psychonic|edgecom|woody|Miraculix|gH0sTy",
+	author = "Hell Phoenix|Naris|FernFerret|Uberman|psychonic|edgecom|woody|Miraculix|gH0sTy|drline",
 	description = "Say Sounds and Action Sounds packaged into one neat plugin! Welcome to the new day of SaySounds Hybrid!",
 	version = PLUGIN_VERSION,
 	url = "http://forums.alliedmods.net/showthread.php?t=82220"

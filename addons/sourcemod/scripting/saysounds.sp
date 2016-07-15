@@ -15,6 +15,7 @@ Cvarlist (default value):
 	sm_saysoundhe_specific_join_exit			0	  Play sounds when a specific STEAM ID joins or exits the game
 	sm_saysoundhe_time_between_sounds		   	4.5		Time between each sound trigger, 0.0 to disable checking
 	sm_saysoundhe_time_between_admin_sounds	4.5		Time between each sound trigger (for admins), 0.0 to disable checking
+	sm_saysoundhe_max_simultaneous_sounds 0		Maximum simultaneous sounds in one frame from one client, 0 to disable checking
 	sm_saysoundhe_showmenu				1	  Turns the Public Sound Menu on(1) or off(0)
 	sm_saysoundhe_volume			  	1.0		Global/Default Volume setting for Say Sounds (0.0 <= x <= 1.0).
 	sm_saysoundhe_interrupt_sound	1	  If set, interrupt the current sound when a new start
@@ -119,6 +120,7 @@ new Handle:cvarjoinspawn			= null;
 new Handle:cvarspecificjoinexit		= null;
 new Handle:cvartimebetween			= null;
 new Handle:cvartimebetweenFlags		= null;
+ConVar cvarmaxsimul;
 new Handle:cvaradmintime			= null;
 new Handle:cvaradminwarn			= null;
 new Handle:cvaradminlimit			= null;
@@ -174,6 +176,7 @@ new bool:firstSpawn[MAXPLAYERS+1];
 //new bool:greeted[MAXPLAYERS+1];
 new Float:globalLastSound = 0.0;
 new Float:globalLastAdminSound = 0.0;
+int globalLastSoundCounter = 0;
 new String:LastPlayedSound[PLATFORM_MAX_PATH+1] = "";
 new bool:hearalive = true;
 new bool:gb_csgo = false;
@@ -249,6 +252,7 @@ public OnPluginStart()
 	// Anti-Spam cavrs
 	cvartimebetween = CreateConVar("sm_saysoundhe_time_between_sounds","4.5","Time between each sound trigger, 0.0 to disable checking");
 	cvartimebetweenFlags = CreateConVar("sm_saysoundhe_time_between_flags","","User flags to bypass the Time between sounds check");
+	cvarmaxsimul = CreateConVar("sm_saysoundhe_max_simultaneous_sounds","0","Maximum simultaneous sounds in one frame from one client, 0 to disable checking");
 	// Admin limit cvars
 	cvaradmintime = CreateConVar("sm_saysoundhe_time_between_admin_sounds","4.5","Time between each admin sound trigger, 0.0 to disable checking for admin sounds \nSet to -1 to completely bypass the soundspam protection for admins");
 	cvaradminwarn = CreateConVar("sm_saysoundhe_sound_admin_warn","0","Number of sounds to warn admin at (0 for no warnings)");
@@ -1497,7 +1501,7 @@ public Action:Command_Say(client, const String:command[], argc){
 			adult = bool:KvGetNum(listfile, "adult",0);
 			if ((sentence && StrContains(speech[startidx],buffer,false) >= 0) ||
 				(strcmp(speech[startidx],buffer,false) == 0)){
-
+					
 					Submit_Sound(client,buffer);
 					trigfound = true;
 					break;
@@ -1758,6 +1762,12 @@ public Action:Play_Sound_Timer(Handle:timer,Handle:pack)
 		}
 	}
 
+	//putting anti bomb here --drline	
+	if (cvarmaxsimul.IntValue != 0) { 		//we checking for bombs?
+		globalLastSoundCounter = (globalLastSound == thetime) ? globalLastSoundCounter + 1 : 0; //check if bomb, inc if true, otherwise reset
+		if (globalLastSoundCounter >= cvarmaxsimul.IntValue) return Plugin_Handled; //bail out: too high bomb
+	}
+	//end anti bomb
 
 	//	new Float:waitTime = GetConVarFloat(cvartimebetween);
 	if (waitTime > 0.0 && waitTime < duration)

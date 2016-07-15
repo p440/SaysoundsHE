@@ -336,5 +336,7 @@ Versions:
 		* Fixed issue for cs go and interrupt cvar
 	4.0.10 June 25, 2016
 		* Increased maximum sound level (you may need to adjust your soundclips less often now)
+	4.0.11 July 15, 2016
+		* Added maximum simultaneous sounds convar, now people cant just bomb a ton of noise through the console!
 Todo:
 	* Optimise keyvalues usage

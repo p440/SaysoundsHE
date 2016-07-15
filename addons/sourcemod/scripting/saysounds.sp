@@ -2,21 +2,22 @@
  * vim: set ai et ts=4 sw=4 :
 
 Cvarlist (default value):
-	sm_sound_enable					1	  Turns Sounds On/Off
-	sm_sound_warn					3	  Number of sounds to warn person at
-	sm_sound_limit				   	5	  Maximum sounds per person
-	sm_sound_admin_limit			0	  Maximum sounds per admin
-	sm_sound_admin_warn				0		Number of sounds to warn admin at
-	sm_sound_announce				0	  Turns on announcements when a sound is played
-	sm_sound_sentence				0	  When set, will trigger sounds if keyword is embedded in a sentence
-	sm_sound_logging				0	  When set, will log sounds that are played
-	sm_join_exit					0	  Play sounds when someone joins or exits the game
-	sm_join_spawn					1	  Wait until the player spawns before playing the join sound
-	sm_specific_join_exit			0	  Play sounds when a specific STEAM ID joins or exits the game
-	sm_time_between_sounds		   	4.5		Time between each sound trigger, 0.0 to disable checking
-	sm_time_between_admin_sounds	4.5		Time between each sound trigger (for admins), 0.0 to disable checking
-	sm_sound_showmenu				1	  Turns the Public Sound Menu on(1) or off(0)
-	sm_saysounds_volume			  	1.0		Global/Default Volume setting for Say Sounds (0.0 <= x <= 1.0).
+	sm_saysoundhe_enable					1	  Turns Sounds On/Off
+	sm_saysoundhe_sound_warn					3	  Number of sounds to warn person at
+	sm_saysoundhe_sound_limit				   	5	  Maximum sounds per person
+	sm_saysoundhe_sound_admin_limit			0	  Maximum sounds per admin
+	sm_saysoundhe_sound_admin_warn				0		Number of sounds to warn admin at
+	sm_saysoundhe_sound_announce				0	  Turns on announcements when a sound is played
+	sm_saysoundhe_sound_sentence				0	  When set, will trigger sounds if keyword is embedded in a sentence
+	sm_saysoundhe_sound_logging				0	  When set, will log sounds that are played
+	sm_saysoundhe_join_exit					0	  Play sounds when someone joins or exits the game
+	sm_saysoundhe_join_spawn					1	  Wait until the player spawns before playing the join sound
+	sm_saysoundhe_specific_join_exit			0	  Play sounds when a specific STEAM ID joins or exits the game
+	sm_saysoundhe_time_between_sounds		   	4.5		Time between each sound trigger, 0.0 to disable checking
+	sm_saysoundhe_time_between_admin_sounds	4.5		Time between each sound trigger (for admins), 0.0 to disable checking
+	sm_saysoundhe_max_simultaneous_sounds 0		Maximum simultaneous sounds in one frame from one client, 0 to disable checking
+	sm_saysoundhe_showmenu				1	  Turns the Public Sound Menu on(1) or off(0)
+	sm_saysoundhe_volume			  	1.0		Global/Default Volume setting for Say Sounds (0.0 <= x <= 1.0).
 	sm_saysoundhe_interrupt_sound	1	  If set, interrupt the current sound when a new start
 	sm_saysoundhe_filter_if_dead	 0	  If set, alive players do not hear sounds triggered by dead players
 	sm_saysoundhe_download_threshold -1	 If set, sets the number of sounds that are downloaded per map.
@@ -119,6 +120,7 @@ new Handle:cvarjoinspawn			= null;
 new Handle:cvarspecificjoinexit		= null;
 new Handle:cvartimebetween			= null;
 new Handle:cvartimebetweenFlags		= null;
+ConVar cvarmaxsimul;
 new Handle:cvaradmintime			= null;
 new Handle:cvaradminwarn			= null;
 new Handle:cvaradminlimit			= null;
@@ -174,6 +176,7 @@ new bool:firstSpawn[MAXPLAYERS+1];
 //new bool:greeted[MAXPLAYERS+1];
 new Float:globalLastSound = 0.0;
 new Float:globalLastAdminSound = 0.0;
+int globalLastSoundCounter = 0;
 new String:LastPlayedSound[PLATFORM_MAX_PATH+1] = "";
 new bool:hearalive = true;
 new bool:gb_csgo = false;
@@ -249,6 +252,7 @@ public OnPluginStart()
 	// Anti-Spam cavrs
 	cvartimebetween = CreateConVar("sm_saysoundhe_time_between_sounds","4.5","Time between each sound trigger, 0.0 to disable checking");
 	cvartimebetweenFlags = CreateConVar("sm_saysoundhe_time_between_flags","","User flags to bypass the Time between sounds check");
+	cvarmaxsimul = CreateConVar("sm_saysoundhe_max_simultaneous_sounds","0","Maximum simultaneous sounds in one frame from one client, 0 to disable checking");
 	// Admin limit cvars
 	cvaradmintime = CreateConVar("sm_saysoundhe_time_between_admin_sounds","4.5","Time between each admin sound trigger, 0.0 to disable checking for admin sounds \nSet to -1 to completely bypass the soundspam protection for admins");
 	cvaradminwarn = CreateConVar("sm_saysoundhe_sound_admin_warn","0","Number of sounds to warn admin at (0 for no warnings)");
@@ -260,7 +264,7 @@ public OnPluginStart()
 	cvaradult = CreateConVar("sm_saysoundhe_adult_announce","0","Announce played adult sounds? | 0 = off 1 = on");
 	cvarsentence = CreateConVar("sm_saysoundhe_sound_sentence","0","When set, will trigger sounds if keyword is embedded in a sentence");
 	cvarlogging = CreateConVar("sm_saysoundhe_sound_logging","0","When set, will log sounds that are played");
-	cvarvolume = CreateConVar("sm_saysoundhe_saysounds_volume","1.0","Volume setting for Say Sounds (0.0 <= x <= 1.0)",0,true,0.0,true,1.0); // mod by Woody
+	cvarvolume = CreateConVar("sm_saysoundhe_volume","1.0","Volume setting for Say Sounds (0.0 <= x <= 1.0)",0,true,0.0,true,1.0); // mod by Woody
 	cvarplayifclsndoff = CreateConVar("sm_saysoundhe_play_cl_snd_off","0","When set, allows clients that have turned their sounds off to trigger sounds (0=off | 1=on)");
 	cvarkaraokedelay = CreateConVar("sm_saysoundhe_karaoke_delay","15.0","Delay before playing a Karaoke song");
 	cvarexcludelastsound = CreateConVar("sm_saysoundhe_excl_last_sound", "0", "If set, don't allow to play a sound that was recently played");
@@ -1497,7 +1501,7 @@ public Action:Command_Say(client, const String:command[], argc){
 			adult = bool:KvGetNum(listfile, "adult",0);
 			if ((sentence && StrContains(speech[startidx],buffer,false) >= 0) ||
 				(strcmp(speech[startidx],buffer,false) == 0)){
-
+					
 					Submit_Sound(client,buffer);
 					trigfound = true;
 					break;
@@ -1758,6 +1762,12 @@ public Action:Play_Sound_Timer(Handle:timer,Handle:pack)
 		}
 	}
 
+	//putting anti bomb here --drline	
+	if (cvarmaxsimul.IntValue != 0) { 		//we checking for bombs?
+		globalLastSoundCounter = (globalLastSound == thetime) ? globalLastSoundCounter + 1 : 0; //check if bomb, inc if true, otherwise reset
+		if (globalLastSoundCounter >= cvarmaxsimul.IntValue) return Plugin_Handled; //bail out: too high bomb
+	}
+	//end anti bomb
 
 	//	new Float:waitTime = GetConVarFloat(cvartimebetween);
 	if (waitTime > 0.0 && waitTime < duration)

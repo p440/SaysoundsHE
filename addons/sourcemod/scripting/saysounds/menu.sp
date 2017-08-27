@@ -3,32 +3,32 @@
 //						*** Menu Handling ***					  *
 //	------------------------------------------------------------- *
 //*****************************************************************
-public OnAdminMenuReady(Handle:topmenu)
+public void OnAdminMenuReady(Handle topmenu)
 {
 	/*************************************************************/
 	/* Add a Play Admin Sound option to the SourceMod Admin Menu */
 	/*************************************************************/
 
 	/* Block us from being called twice */
-	if (topmenu != hAdminMenu)
-	{
-		/* Save the Handle */
-		hAdminMenu = topmenu;
-		new TopMenuObject:server_commands = FindTopMenuCategory(hAdminMenu, ADMINMENU_SERVERCOMMANDS);
-		AddToTopMenu(hAdminMenu, "sm_admin_sounds", TopMenuObject_Item, Play_Admin_Sound,
-					 server_commands, "sm_admin_sounds", ADMFLAG_GENERIC);
-		AddToTopMenu(hAdminMenu, "sm_karaoke", TopMenuObject_Item, Play_Karaoke_Sound, server_commands, "sm_karaoke", ADMFLAG_CHANGEMAP);
+	if (topmenu == g_hAdminMenu)
+		return;
 
-		/* ####FernFerret#### */
-		// Added two new items to the admin menu, the soundmenu hide (toggle) and the all sounds menu
-		AddToTopMenu(hAdminMenu, "sm_all_sounds", TopMenuObject_Item, Play_All_Sound, server_commands, "sm_all_sounds", ADMFLAG_GENERIC);
-		AddToTopMenu(hAdminMenu, "sm_sound_showmenu", TopMenuObject_Item, Set_Sound_Menu, server_commands, "sm_sound_showmenu", ADMFLAG_CHANGEMAP);
-		/* ################## */
-	}
+	/* Save the Handle */
+	g_hAdminMenu = topmenu;
+
+	TopMenuObject server_commands = FindTopMenuCategory(g_hAdminMenu, ADMINMENU_SERVERCOMMANDS);
+	AddToTopMenu(g_hAdminMenu, "sm_admin_sounds", TopMenuObject_Item, Play_Admin_Sound,
+				 server_commands, "sm_admin_sounds", ADMFLAG_GENERIC);
+	AddToTopMenu(g_hAdminMenu, "sm_karaoke", TopMenuObject_Item, Play_Karaoke_Sound, server_commands, "sm_karaoke", ADMFLAG_CHANGEMAP);
+
+	/* ####FernFerret#### */
+	// Added two new items to the admin menu, the g_hMSoundMenu hide (toggle) and the all sounds menu
+	AddToTopMenu(g_hAdminMenu, "sm_all_sounds", TopMenuObject_Item, Play_All_Sound, server_commands, "sm_all_sounds", ADMFLAG_GENERIC);
+	AddToTopMenu(g_hAdminMenu, "sm_sound_showmenu", TopMenuObject_Item, Set_Sound_Menu, server_commands, "sm_sound_showmenu", ADMFLAG_CHANGEMAP);
+	/* ################## */
 }
 
-public Play_Admin_Sound(Handle:topmenu, TopMenuAction:action, TopMenuObject:object_id,
-						param, String:buffer[], maxlength)
+public void Play_Admin_Sound(Handle topmenu, TopMenuAction action, TopMenuObject object_id, int param, char[] buffer, int maxlength)
 {
 	if (action == TopMenuAction_DisplayOption)
 		Format(buffer, maxlength, "Play Admin Sound");
@@ -36,8 +36,7 @@ public Play_Admin_Sound(Handle:topmenu, TopMenuAction:action, TopMenuObject:obje
 		Sound_Menu(param,admin_sounds);
 }
 
-public Play_Karaoke_Sound(Handle:topmenu, TopMenuAction:action, TopMenuObject:object_id,
-						  param, String:buffer[], maxlength)
+public void Play_Karaoke_Sound(Handle topmenu, TopMenuAction action, TopMenuObject object_id, int param, char[] buffer, int maxlength)
 {
 	if (action == TopMenuAction_DisplayOption)
 		Format(buffer, maxlength, "Karaoke");
@@ -48,7 +47,7 @@ public Play_Karaoke_Sound(Handle:topmenu, TopMenuAction:action, TopMenuObject:ob
 /* ####FernFerret#### */
 // Start FernFerret's Action Sounds Code
 // This function sets parameters for showing the All Sounds item in the menu
-public Play_All_Sound(Handle:topmenu, TopMenuAction:action, TopMenuObject:object_id, param, String:buffer[], maxlength)
+public void Play_All_Sound(Handle topmenu, TopMenuAction action, TopMenuObject object_id, int param, char[] buffer, int maxlength)
 {
 	if (action == TopMenuAction_DisplayOption)
 		Format(buffer, maxlength, "Play a Sound");
@@ -57,30 +56,30 @@ public Play_All_Sound(Handle:topmenu, TopMenuAction:action, TopMenuObject:object
 }
 
 // Creates the SoundMenu show/hide item in the admin menu, it is a toggle
-public Set_Sound_Menu(Handle:topmenu, TopMenuAction:action, TopMenuObject:object_id, param, String:buffer[], maxlength)
+public void Set_Sound_Menu(Handle topmenu, TopMenuAction action, TopMenuObject object_id, int param, char[] buffer, int maxlength)
 {
-	if(GetConVarInt(cvarshowsoundmenu) == 1)
+	if(g_hCVShowSoundMenu.IntValue == 1)
 	{
 		if (action == TopMenuAction_DisplayOption)
 			Format(buffer, maxlength, "Hide Sound Menu");
 		else if (action == TopMenuAction_SelectOption)
-			SetConVarInt(cvarshowsoundmenu, 0);
+			g_hCVShowSoundMenu.SetInt(0);
 	}
 	else
 	{
 		if (action == TopMenuAction_DisplayOption)
 			Format(buffer, maxlength, "Show Sound Menu");
 		else if (action == TopMenuAction_SelectOption)
-			SetConVarInt(cvarshowsoundmenu, 1);
+			g_hCVShowSoundMenu.SetInt(1);
 	}
 }
 
-public Sound_Menu(client, sound_types:types)
+public void Sound_Menu(int client, sound_types types)
 {
 	if (types >= admin_sounds)
 	{
-		new AdminId:aid = GetUserAdmin(client);
-		new bool:isadmin = (aid != INVALID_ADMIN_ID) && GetAdminFlag(aid, Admin_Generic, Access_Effective);
+		AdminId aid = GetUserAdmin(client);
+		bool isadmin = (aid != INVALID_ADMIN_ID) && GetAdminFlag(aid, Admin_Generic, Access_Effective);
 		if (!isadmin)
 		{
 			//PrintToChat(client,"[Say Sounds] You must be an admin view this menu!");
@@ -89,39 +88,38 @@ public Sound_Menu(client, sound_types:types)
 		}
 	}
 
-	new Handle:soundmenu=CreateMenu(Menu_Select);
-	SetMenuExitButton(soundmenu,true);
-	SetMenuTitle(soundmenu,"Choose a sound to play.");
+	Menu g_hMSoundMenu = new Menu(Menu_Select);
+	g_hMSoundMenu.SetTitle("Choose a sound to play.");
 
-	decl String:title[PLATFORM_MAX_PATH+1];
-	decl String:buffer[PLATFORM_MAX_PATH+1];
-	decl String:karaokefile[PLATFORM_MAX_PATH+1];
+	char title[PLATFORM_MAX_PATH+1];
+	char buffer[PLATFORM_MAX_PATH+1];
+	char karaokefile[PLATFORM_MAX_PATH+1];
 
-	KvRewind(listfile);
-	if (KvGotoFirstSubKey(listfile))
+	g_hKVListFile.Rewind();
+	if (g_hKVListFile.GotoFirstSubKey())
 	{
 		do
 		{
-			KvGetSectionName(listfile, buffer, sizeof(buffer));
+			g_hKVListFile.GetSectionName(buffer, sizeof(buffer));
 			if (!StrEqual(buffer, "JoinSound") &&
 				!StrEqual(buffer, "ExitSound") &&
 				strncmp(buffer,"STEAM_",6,false))
 			{
-				if (!KvGetNum(listfile, "actiononly", 0) &&
-					KvGetNum(listfile, "enable", 1))
+				if (!g_hKVListFile.GetNum("actiononly", 0) &&
+					g_hKVListFile.GetNum("enable", 1))
 				{
-					new bool:admin = bool:KvGetNum(listfile, "admin",0);
-					new bool:adult = bool:KvGetNum(listfile, "adult",0);
+					bool admin = view_as<bool>(g_hKVListFile.GetNum("admin",0));
+					bool adult = view_as<bool>(g_hKVListFile.GetNum("adult",0));
 					if (!admin || types >= admin_sounds)
 					{
 						title[0] = '\0';
-						KvGetString(listfile, "title", title, sizeof(title));
+						g_hKVListFile.GetString("title", title, sizeof(title));
 						if (!title[0])
 							strcopy(title, sizeof(title), buffer);
 
 						karaokefile[0] = '\0';
-						KvGetString(listfile, "karaoke", karaokefile, sizeof(karaokefile));
-						new bool:karaoke = (karaokefile[0] != '\0');
+						g_hKVListFile.GetString("karaoke", karaokefile, sizeof(karaokefile));
+						bool karaoke = (karaokefile[0] != '\0');
 						if (!karaoke || types >= karaoke_sounds)
 						{
 							switch (types)
@@ -147,45 +145,47 @@ public Sound_Menu(client, sound_types:types)
 							}
 							if(!adult)
 							{
-								AddMenuItem(soundmenu,buffer,title);
+								g_hMSoundMenu.AddItem(buffer, title);
 							}
 						}
 					}
 				}
 			}
-		} while (KvGotoNextKey(listfile));
+		} while (g_hKVListFile.GotoNextKey());
 	}
 	else
 	{
 		SetFailState("No subkeys found in the config file!");
 	}
 
-	DisplayMenu(soundmenu,client,MENU_TIME_FOREVER);
+	g_hMSoundMenu.Display(client, MENU_TIME_FOREVER);
 }
 
-public Menu_Select(Handle:menu,MenuAction:action,client,selection)
+public int Menu_Select(Menu menu, MenuAction action, int client, int selection)
 {
-	if(action==MenuAction_Select)
+	if(action == MenuAction_Select)
 	{
-		decl String:SelectionInfo[PLATFORM_MAX_PATH+1];
-		if (GetMenuItem(menu,selection,SelectionInfo,sizeof(SelectionInfo)))
+		char SelectionInfo[PLATFORM_MAX_PATH+1];
+		if (menu.GetItem(selection, SelectionInfo, sizeof(SelectionInfo)))
 		{
-			KvRewind(listfile);
-			KvGotoFirstSubKey(listfile);
-			decl String:buffer[PLATFORM_MAX_PATH];
+			g_hKVListFile.Rewind();
+			g_hKVListFile.GotoFirstSubKey();
+			char buffer[PLATFORM_MAX_PATH];
 			do
 			{
-				KvGetSectionName(listfile, buffer, sizeof(buffer));
+				g_hKVListFile.GetSectionName(buffer, sizeof(buffer));
 				if (strcmp(SelectionInfo,buffer,false) == 0)
 				{
 					Submit_Sound(client,buffer);
 					break;
 				}
-			} while (KvGotoNextKey(listfile));
+			} while (g_hKVListFile.GotoNextKey());
 		}
 	}
 	else if (action == MenuAction_End)
-		CloseHandle(menu);
+		delete menu;
+
+	return 0;
 }
 
 //*****************************************************************
@@ -193,20 +193,20 @@ public Menu_Select(Handle:menu,MenuAction:action,client,selection)
 //				*** Client Preferences Menu ***					  *
 //	------------------------------------------------------------- *
 //*****************************************************************
-public SaysoundClientPref(client, CookieMenuAction:action, any:info, String:buffer[], maxlen)
+public void SaysoundClientPref(int client, CookieMenuAction action, any info, char[] buffer, int maxlen)
 {
 	if (action == CookieMenuAction_SelectOption)
 	{
-		decl String:confMenuFlags[26];
+		char confMenuFlags[26];
 		confMenuFlags[0] = '\0';
-		GetConVarString(cvarMenuSettingsFlags, confMenuFlags, sizeof(confMenuFlags));
+		g_hCVMenuSettingsFlags.GetString(confMenuFlags, sizeof(confMenuFlags));
 		
 		if (confMenuFlags[0] == '\0' || HasClientFlags(confMenuFlags, client))
 			ShowClientPrefMenu(client);
 	}
 }
 
-public MenuHandlerClientPref(Handle:menu, MenuAction:action, param1, param2)
+public int MenuHandlerClientPref(Menu menu, MenuAction action, int param1, int param2)
 {
 	if(action == MenuAction_Select)	
 	{
@@ -249,18 +249,18 @@ public MenuHandlerClientPref(Handle:menu, MenuAction:action, param1, param2)
 		ShowClientPrefMenu(param1);
 	} 
 	else if(action == MenuAction_End)
-	{
-		CloseHandle(menu);
-	}
+		delete menu;
+
+	return 0;
 }
 
-ShowClientPrefMenu(client)
+void ShowClientPrefMenu(int client)
 {
-	new Handle:menu = CreateMenu(MenuHandlerClientPref);
-	decl String:buffer[100];
+	Menu menu = new Menu(MenuHandlerClientPref);
+	char buffer[100];
 
 	Format(buffer, sizeof(buffer), "%T", "SaysoundsMenu", client);
-	SetMenuTitle(menu, buffer);
+	menu.SetTitle(buffer);
 
 	// Saysounds
 	if(!checkClientCookies(client, CHK_SAYSOUNDS))
@@ -268,7 +268,7 @@ ShowClientPrefMenu(client)
 	else
 		Format(buffer, sizeof(buffer), "%T", "DisableSaysound", client);
 
-	AddMenuItem(menu, "SaysoundPref", buffer);
+	menu.AddItem("SaysoundPref", buffer);
 
 	// Action Sounds
 	if(!checkClientCookies(client, CHK_EVENTS))
@@ -276,7 +276,7 @@ ShowClientPrefMenu(client)
 	else
 		Format(buffer, sizeof(buffer), "%T", "DisableEvents", client);
 
-	AddMenuItem(menu, "EventPref", buffer);
+	menu.AddItem("EventPref", buffer);
 
 	// Karaoke
 	if(!checkClientCookies(client, CHK_KARAOKE))
@@ -284,7 +284,7 @@ ShowClientPrefMenu(client)
 	else
 		Format(buffer, sizeof(buffer), "%T", "DisableKaraoke", client);
 
-	AddMenuItem(menu, "KaraokePref", buffer);
+	menu.AddItem("KaraokePref", buffer);
 
 	// Chat Messages
 	if(!checkClientCookies(client, CHK_CHATMSG))
@@ -292,9 +292,7 @@ ShowClientPrefMenu(client)
 	else
 		Format(buffer, sizeof(buffer), "%T", "DisableChat", client);
 
-	AddMenuItem(menu, "ChatPref", buffer);
+	menu.AddItem("ChatPref", buffer);
 
-	SetMenuExitButton(menu, true);
-
-	DisplayMenu(menu, client, 0);
+	menu.Display(client, MENU_TIME_FOREVER);
 }

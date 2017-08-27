@@ -3,16 +3,16 @@
 //						*** Checking stuff ***					  *
 //	------------------------------------------------------------- *
 //*****************************************************************
-bool:HasClientFlags (const String:flags[], client)
+bool HasClientFlags(const char[] flags, int client)
 {
-	new len = strlen(flags);
+	int len = strlen(flags);
 	
 	if (len == 0)
 		return false;
 	
-	new AdminFlag:flag;
+	AdminFlag flag;
 	
-	for (new i = 0; i < len; i++)
+	for (int i = 0; i < len; ++i)
 	{
 		if (!FindFlagByChar(flags[i], flag))
 		{
@@ -24,7 +24,7 @@ bool:HasClientFlags (const String:flags[], client)
 	return false;
 }
 
-public IsGameSound (const String:file[])
+public bool IsGameSound(const char[] file)
 {
 	if (!strncmp(file, "ambient", 7) ||
 		!strncmp(file, "beams", 5) ||
@@ -57,15 +57,15 @@ public IsGameSound (const String:file[])
 		return false;
 }
 
-public IsValidClient (client)
+public bool IsValidClient(int client)
 {
-	if (client <= 0 || client > MaxClients || !IsClientConnected(client) || IsFakeClient(client) || IsClientReplay(client) || IsClientSourceTV(client))
+	if (client < 1 || client > MaxClients || !IsClientConnected(client) || IsFakeClient(client) || IsClientReplay(client) || IsClientSourceTV(client))
 		return false;
 
 	return IsClientInGame(client);
 }
 
-public IsDeadClient (client)
+public bool IsDeadClient(int client)
 {
 	if (IsValidClient(client) && !IsPlayerAlive(client))
 		return true;
@@ -73,7 +73,7 @@ public IsDeadClient (client)
 	return false;
 }
 
-public HearSound (client)
+public bool HearSound(int client)
 {	
 	if (IsPlayerAlive(client) && !hearalive)
 		return false;
@@ -81,25 +81,25 @@ public HearSound (client)
 		return true;
 }
 
-public OnLibraryRemoved(const String:name[])
+public void OnLibraryRemoved(const char[] name)
 {
 	if (StrEqual(name, "adminmenu"))
-		hAdminMenu = INVALID_HANDLE;
+		hAdminMenu = null;
 }
 
-bool:checkSamplingRate(const String:filelocation[])
+bool checkSamplingRate(const char[] filelocation)
 {
-	new Handle:h_Soundfile = OpenSoundFile(filelocation,true);
-	new samplerate;
-	if (h_Soundfile != INVALID_HANDLE)
+	Handle h_Soundfile = OpenSoundFile(filelocation,true);
+	int samplerate;
+	if (h_Soundfile != null)
 		samplerate = GetSoundSamplingRate(h_Soundfile);
 	else
 	{
 		LogError("<checkSamplingRate> INVALID_HANDLE for file \"%s\" ", filelocation);
-		CloseHandle(h_Soundfile);
+		delete h_Soundfile;
 		return false;
 	}
-	CloseHandle(h_Soundfile);
+	delete h_Soundfile;
 
 	if (samplerate > 44100)
 	{
@@ -113,9 +113,9 @@ bool:checkSamplingRate(const String:filelocation[])
 //				*** Checking Client Preferences ***				  *
 //	------------------------------------------------------------- *
 //*****************************************************************
-bool:checkClientCookies(iClient, iCase)
+bool checkClientCookies(int iClient, int iCase)
 {
-	new String:cookie[4];
+	char cookie[4];
 
 	switch (iCase)
 	{

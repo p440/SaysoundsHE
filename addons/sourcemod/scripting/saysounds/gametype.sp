@@ -6,13 +6,13 @@
 #tryinclude <gametype>
 #if !defined _gametype_included
 	enum Game { undetected, tf2, cstrike, csgo, dod, hl2mp, insurgency, zps, l4d, l4d2, other_game };
-	stock Game:GameType = undetected;
+	stock Game GameType = undetected;
 
-	stock Game:GetGameType()
+	stock Game GetGameType()
 	{
 		if (GameType == undetected)
 		{
-			new String:modname[30];
+			char modname[30];
 			GetGameFolderName(modname, sizeof(modname));
 			if (StrEqual(modname,"cstrike",false))
 				GameType=cstrike;

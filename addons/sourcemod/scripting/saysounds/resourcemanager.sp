@@ -11,31 +11,31 @@
 	
 	enum State { Unknown=0, Defined, Download, Force, Precached };
 
-	new Handle:cvarDownloadThreshold	= INVALID_HANDLE;
-	new Handle:cvarSoundThreshold		= INVALID_HANDLE;
-	new Handle:cvarSoundLimitMap		= INVALID_HANDLE;
+	ConVar g_hCVDownloadThreshold	= null;
+	ConVar g_hCVSoundThreshold		= null;
+	ConVar g_hCVSoundLimitMap		= null;
 
-	new g_iSoundCount			= 0;
-	new g_iDownloadCount		= 0;
-	new g_iRequiredCount		= 0;
-	new g_iPrevDownloadIndex	= 0;
-	new g_iDownloadThreshold	= -1;
-	new g_iSoundThreshold		= -1;
-	new g_iSoundLimit			= -1;
+	int g_iSoundCount			= 0;
+	int g_iDownloadCount		= 0;
+	int g_iRequiredCount		= 0;
+	int g_iPrevDownloadIndex	= 0;
+	int g_iDownloadThreshold	= -1;
+	int g_iSoundThreshold		= -1;
+	int g_iSoundLimit			= -1;
 
 	// Trie to hold precache status of sounds
-	new Handle:g_soundTrie = INVALID_HANDLE;
+	Handle g_soundTrie = null;
 
-	stock bool:FakePrecacheSound(const String:szPath[])
+	stock bool FakePrecacheSound(const char[] szPath)
 	{
-		decl String:buffer[PLATFORM_MAX_PATH+1];
+		char buffer[PLATFORM_MAX_PATH+1];
 		Format(buffer, sizeof(buffer), "*%s", szPath);
 		AddToStringTable(FindStringTable("soundprecache"), buffer);
 	}
 	
-	stock bool:PrepareSound(const String:sound[], bool:force=false, bool:preload=false)
+	stock bool PrepareSound(const char[] sound, bool force=false, bool preload=false)
 	{
-		new State:value = Unknown;
+		State value = Unknown;
 		if (!GetTrieValue(g_soundTrie, sound, value) || value < Precached)
 		{
 			if (force || value >= Force || g_iSoundLimit <= 0 ||
@@ -50,11 +50,11 @@
 		return true;
 	}
 
-	stock SetupSound(const String:sound[], bool:force=false, download=DOWNLOAD,
-					 bool:precache=false, bool:preload=false)
+	stock void SetupSound(const char[] sound, bool force=false, int download=DOWNLOAD,
+					 bool precache=false, bool preload=false)
 	{
-		new State:value = Unknown;
-		new bool:update = !GetTrieValue(g_soundTrie, sound, value);
+		State value = Unknown;
+		bool update = !GetTrieValue(g_soundTrie, sound, value);
 		if (update || value < Defined)
 		{
 			g_iSoundCount++;
@@ -64,7 +64,7 @@
 
 		if (value < Download && download && g_iDownloadThreshold != 0)
 		{
-			decl String:file[PLATFORM_MAX_PATH+1];
+			char file[PLATFORM_MAX_PATH+1];
 			Format(file, sizeof(file), "sound/%s", sound);
 
 			if (FileExists(file))
@@ -152,24 +152,24 @@
 			SetTrieValue(g_soundTrie, sound, value);
 	}
 
-	stock PrepareAndEmitSound(const clients[],
-					 numClients,
-					 const String:sample[],
-					 entity = SOUND_FROM_PLAYER,
-					 channel = SNDCHAN_AUTO,
-					 level = SNDLEVEL_SCREAMING,
-					 flags = SND_NOFLAGS,
-					 Float:volume = SNDVOL_NORMAL,
-					 pitch = SNDPITCH_NORMAL,
-					 speakerentity = -1,
-					 const Float:origin[3] = NULL_VECTOR,
-					 const Float:dir[3] = NULL_VECTOR,
-					 bool:updatePos = true,
-					 Float:soundtime = 0.0)
+	stock void PrepareAndEmitSound(const int[] clients,
+					 int numClients,
+					 const char[] sample,
+					 int entity = SOUND_FROM_PLAYER,
+					 int channel = SNDCHAN_AUTO,
+					 int level = SNDLEVEL_SCREAMING,
+					 int flags = SND_NOFLAGS,
+					 float volume = SNDVOL_NORMAL,
+					 int pitch = SNDPITCH_NORMAL,
+					 int speakerentity = -1,
+					 float origin[3] = NULL_VECTOR,
+					 float dir[3] = NULL_VECTOR,
+					 bool updatePos = true,
+					 float soundtime = 0.0)
 	{
 		if (PrepareSound(sample))
 		{
-			decl String:SampleBuf[PLATFORM_MAX_PATH+1];
+			char SampleBuf[PLATFORM_MAX_PATH+1];
 			(gb_csgo ? Format(SampleBuf, sizeof(SampleBuf), "*%s", sample) : strcopy(SampleBuf, sizeof(SampleBuf), sample));
 			
 			EmitSound(clients, numClients, SampleBuf, entity, channel,
@@ -178,19 +178,19 @@
 		}
 	}
 
-	stock PrepareAndEmitSoundToClient(client,
-					 const String:sample[],
-					 entity = SOUND_FROM_PLAYER,
-					 channel = SNDCHAN_AUTO,
-					 level = SNDLEVEL_SCREAMING,
-					 flags = SND_NOFLAGS,
-					 Float:volume = SNDVOL_NORMAL,
-					 pitch = SNDPITCH_NORMAL,
-					 speakerentity = -1,
-					 const Float:origin[3] = NULL_VECTOR,
-					 const Float:dir[3] = NULL_VECTOR,
-					 bool:updatePos = true,
-					 Float:soundtime = 0.0)
+	stock void PrepareAndEmitSoundToClient(int client,
+					 const char[] sample,
+					 int entity = SOUND_FROM_PLAYER,
+					 int channel = SNDCHAN_AUTO,
+					 int level = SNDLEVEL_SCREAMING,
+					 int flags = SND_NOFLAGS,
+					 float volume = SNDVOL_NORMAL,
+					 int pitch = SNDPITCH_NORMAL,
+					 int speakerentity = -1,
+					 float origin[3] = NULL_VECTOR,
+					 float dir[3] = NULL_VECTOR,
+					 bool updatePos = true,
+					 float soundtime = 0.0)
 	{
 		if (PrepareSound(sample))
 		{

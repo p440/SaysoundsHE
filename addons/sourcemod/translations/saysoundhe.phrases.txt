@@ -15,65 +15,76 @@
 		"en"    "Sounds disabled"
 		"de"    "Sounds deaktiviert"
 		"ru"	"Звуки отключены"
+		"fr"	"Sons désactivés"
 	}
 	"SoundsEnabled"
 	{
 		"en"    "Sounds enabled"
 		"de"    "Sounds aktiviert"
-		"ru"	"Звуки включены"	
+		"ru"	"Звуки включены"
+		"fr"	"Sons activés"
 	}
 	"Soundlist"
 	{
 		"en"    "Check your console for a list of sound triggers"
 		"de"    "Überprüfe deine Konsole für eine Liste von Sounds"
 		"ru"	"Смотрите в консоли список доступных звуковых переменных"
+		"fr"	"La liste des sons a été affichée dans votre console"
 	}
 	"ActionSounds"
 	{
 		"en"    "Sorry, this is an action sound!"
 		"de"    "Entschuldigung, das ist ein Action Sound!"
 		"ru"	"Извините, но это звук события!"
+		"fr"	"Désolé, c'est un 'Action Round'!"
 	}
 	"NoAccess"
 	{
 		"en"	"Sorry, you don't have access to this sound"
 		"de"	"Du hast keinen Zugriff auf den Sound"
+		"fr"	"Désolé, vous n'avez pas accès à ce son"
 	}
 	"AdminSounds"
 	{
 		"en"    "Sorry, you are not authorized to play this sound!"
 		"de"    "Entschuldigung, du hast keine Berechtigung diesen Sound abzuspielen!"
 		"ru"	"Извините, но у Вас недостаточно полномочий проигрывать этот звук!"
+		"fr"	"Désolé, vous n'êtes pas autorisé à jouer ce son!"
 	}
 	"SpamSounds"
 	{
 		"en"    "Please don't spam the sounds!"
 		"de"    "Bitte spamme keine Sounds!"
 		"ru"	"Пожалуйста не спамьте звуками!"
+		"fr"	"Veuillez ne pas spammer les sons!"
 	}
 	"SpamAdminSounds"
 	{
 		"en"    "Please don't spam the admin sounds!"
 		"de"    "Bitte spamme keine Admin Sounds!"
 		"ru"	"Пожалуйста не спамьте админ-звуками!"
+		"fr"	"Veuillez ne pas spammer les sons admins!"
 	}
 	"RecentlyPlayed"
 	{
 		"en"    "Sorry, this sound was recently played."
 		"de"    "Entschuldigung, dieser Sound wurde gerade erst gespielt."
 		"ru"	"Извините, но этот звук уже был недавно проигран."
+		"fr"	"Désolé, ce son a été joué récemment."
 	}
 	"QuotaReched"
 	{
 		"en"    "Sorry, you have reached your sound quota!"
 		"de"    "Entschuldigung, du hast dein Sound Kontingent ausgeschöpft!"
 		"ru"	"Извините, Вы исчерпали доступный лимит звуков!"
+		"fr"	"Désolé vous avez atteint votre quota de son!"
 	}
 	"NoSoundsLeft"
 	{
 		"en"    "You have no sounds left to use!"
 		"de"    "Du hast keine Sounds mehr übrig!"
 		"ru"	"У Вас не осталось звуков для проигрывания!"
+		"fr"	"Il ne vous reste plus de son à utiliser!"
 	}
 	"SoundLeft"
 	{
@@ -81,6 +92,7 @@
 		"en"    "You only have {1} sound left to use!"
 		"de"    "Du hast nur noch {1} Sound übrig!"
 		"ru"	"У Вас осталось {1} звуков для проигрывания!"
+		"fr"	"Vous n'avez plus que {1} son restant!"
 	}
 	"SoundLeftPlural"
 	{
@@ -88,18 +100,21 @@
 		"en"    "You only have {1} sounds left to use!"
 		"de"    "Du hast nur noch {1} Sounds übrig!"
 		"ru"	"У Вас осталось {1} звуков для проигрывания!"
+		"fr"	"Vous n'avez plus que {1} sons restant!"
 	}
 	"QuotaResetUsage"
 	{
 		"en"    "Usage: sm_sound_reset <user | all> : Resets sound quota for user, or everyone if alla!"
 		"de"    "Verwendung: sm_sound_reset <user | all> : Setzt das Sound Kontingent für einen Spieler oder für alle zurück wenn 'all'!"
 		"ru"	"Использование: sm_sound_reset <user | all> : Обнулить лимит звуков для пользователя, или для всех, если используется 'all'!"
+		"fr"	"Utilisation: sm_sound_reset <user | all> : Remet à zéro le quota de sons d'un joueur ou de tous les joueurs si 'all' est utilisé!"
 	}
 	"QuotaResetAll"
 	{
 		"en"    "Quota has been reset for all players"
 		"de"    "Kontingent wurde für alle zurückgesetzt"
 		"ru"	"Лимит звуков был обнулен для всех игроков"
+		"fr"	"Les quotas de sons ont été remis à zéro pour tous les joueurs"
 	}
 	"QuotaResetUser"
 	{
@@ -107,12 +122,14 @@
 		"en"    "Quota has been reset for {1}"
 		"de"    "Kontingent wurde für {1} zurückgesetzt"
 		"ru"	"Лимит звуков обнулен для {1}"
+		"fr"	"Le quota de son de {1} à été remis à zéro"
 	}
 	"SoundBanUsage"
 	{
 		"en"    "Usage: sm_sound_ban <user> : Bans a player from using sounds"
 		"de"    "Verwendung: sm_sound_ban <user> : Bannt einen Spieler von der Nutzung von Sounds"
 		"ru"	"Использование: sm_sound_ban <user> : Запретить игроку использование звуков"
+		"fr"	"Utilisation: sm_sound_ban <user> : Le joueur ne pourra plus jouer de sons"
 	}
 	"AlreadyBanned"
 	{
@@ -120,6 +137,7 @@
 		"en"    "{1} is already banned!"
 		"de"    "{1} ist bereits gebannt!"
 		"ru"	"{1} уже в списке забаненных!"
+		"fr"	"{1} est déjà banni!"
 	}
 	"PlayerBanned"
 	{
@@ -127,12 +145,14 @@
 		"en"    "{1} has been banned!"
 		"de"    "{1} wurde gebannt!"
 		"ru"	"{1} был забанен!"
+		"fr"	"{1} a été banni!"
 	}
 	"SoundUnbanUsage"
 	{
 		"en"    "Usage: sm_sound_unban <user> <1|0> : Unbans a player from using sounds"
 		"de"    "Verwendung: sm_sound_unban <user> <1|0> : Entbannt einen Spieler von der Nutzung von Sounds"
 		"ru"	"Использование: sm_sound_unban <user> <1|0> : Разрешить игроку использование звуков"
+		"fr"	"Utilisation: sm_sound_unban <user> <1|0> : Le joueur pourra à nouveau utiliser les sons"
 	}
 	"NotBanned"
 	{
@@ -140,6 +160,7 @@
 		"en"    "{1} is not banned!"
 		"de"    "{1} ist nicht gebannt!"
 		"ru"	"{1} не забанен!"
+		"fr"	"{1} n'est pas banni!"
 	}
 	"PlayerUnbanned"
 	{
@@ -147,68 +168,81 @@
 		"en"    "{1} has been unbanned!"
 		"de"    "{1} wurde entbannt!"
 		"ru"	"{1} был разбанен!"
+		"fr"	"{1} a été débanni!"
 	}
 	"AdminMenu"
 	{
 		"en"    "You must be an admin to view this menu!"
 		"de"    "Du musst Admin sein um dieses Menü anzeigen zu können!"
 		"ru"	"Вы должны быть админом, что бы просматривать это меню!"
+		"fr"	"Vous devez être admin pour ouvrir ce menu!"
 	}
 	"PlayedSound"
 	{
 		"#format"	"{1:N},{2:s}"
 		"en"    "{1} played {2}"
 		"de"    "{1} spielte {2}"
+		"fr"    "{1} a joué {2}"
 	}
 	"PlayedAdultSound"
 	{
 		"#format"	"{1:N}"
 		"en"    "{1} played CENSORED SOUND"
 		"de"    "{1} spielte ZENSIERT"
+		"fr"    "{1} a joué SON CENSURE"
 	}
 	"SaysoundsMenu"
 	{
 		"en"    "Say Sounds Menu"
 		"de"    "Say Sounds Menü"
+		"fr"    "Say Sounds Menu"
 	}
 	"EnableSaysound"
 	{
 		"en"	"Enable say sounds"
 		"de"	"Aktiviere Say Sounds"
+		"fr"	"Activer Say Sounds"
 	}
 	"DisableSaysound"
 	{
 		"en"	"Disable say sounds"
 		"de"	"Deaktiviere Say Sounds"
+		"fr"	"Désactiver Say Sounds"
 	}
 	"EnableEvents"
 	{
 		"en"	"Enable action sounds"
 		"de"	"Aktiviere Action Sounds"
+		"fr"	"Activer les sons d'actions"
 	}
 	"DisableEvents"
 	{
 		"en"	"Disable action sounds"
 		"de"	"Deaktiviere Action Sounds"
+		"fr"	"Désactiver les sons d'actions"
 	}
 	"EnableKaraoke"
 	{
 		"en"	"Enable Karaoke"
 		"de"	"Aktiviere Karaoke"
+		"fr"	"Activer le karaoké"
 	}
 	"DisableKaraoke"
 	{
 		"en"	"Disable Karaoke"
 		"de"	"Deaktiviere Karaoke"
+		"fr"	"Désactiver le karaoké"
 	}
 	"EnableChat"
 	{
 		"en"	"Enable chat display"
 		"de"	"Aktiviere Chat Anzeige"
+		"fr"	"Activer les messages de tchat"
 	}
 	"DisableChat"
 	{
 		"en"	"Disable chat display"
 		"de"	"Deaktiviere Chat Anzeige"
+		"fr"	"Désactiver les messages de tchat"
 	}
 }

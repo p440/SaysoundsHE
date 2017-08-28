@@ -36,7 +36,7 @@
 		"en"    "Sorry, this is an action sound!"
 		"de"    "Entschuldigung, das ist ein Action Sound!"
 		"ru"	"Извините, но это звук события!"
-		"fr"	"Désolé, c'est un 'Action Round'!"
+		"fr"	"Désolé, c'est un son réservé aux actions!"
 	}
 	"NoAccess"
 	{
@@ -225,24 +225,24 @@
 	{
 		"en"	"Enable Karaoke"
 		"de"	"Aktiviere Karaoke"
-		"fr"	"Activer le karaoké"
+		"fr"	"Activer le Karaoké"
 	}
 	"DisableKaraoke"
 	{
 		"en"	"Disable Karaoke"
 		"de"	"Deaktiviere Karaoke"
-		"fr"	"Désactiver le karaoké"
+		"fr"	"Désactiver le Karaoké"
 	}
 	"EnableChat"
 	{
 		"en"	"Enable chat display"
 		"de"	"Aktiviere Chat Anzeige"
-		"fr"	"Activer les messages de tchat"
+		"fr"	"Activer les messages dans le tchat"
 	}
 	"DisableChat"
 	{
 		"en"	"Disable chat display"
 		"de"	"Deaktiviere Chat Anzeige"
-		"fr"	"Désactiver les messages de tchat"
+		"fr"	"Désactiver les messages dans le tchat"
 	}
 }
